@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle
+ -->
+<odoo>
+    <!--form-->
+    <record id="crm_pipline_wizard_form" model="ir.ui.view">
+        <field name="name">form.crm.lead.wizard</field>
+        <field name="model">crm.lead.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pipline History Report">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="stage_ids" widget="many2many_tags" />
+                    </group>
+                    <group>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Print" name="print_pipline_report" type="object" class="oe_highlight" icon="fa-print"/>
+                    <button string="Close Window" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+
+        
+    </record>
+    <!--action-->
+    <record id="crm_pipline_action_form" model="ir.actions.act_window">
+        <field name="name">Pipeline Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.lead.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="dev_crm_pipeline_report.model_crm_lead_wizard"/>
+        <field name="target">new</field>
+
+    </record>
+    
+    <menuitem name="Pipeline History Report" id="menu_pipeline_history_report" parent="crm.crm_menu_report" action="crm_pipline_action_form" sequence="5"/>
+
+
+
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle
+ -->
+
+<odoo>
+    <template id="pipline_template">
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size: 16px;">
+                <h2 style="text-align: center; color:rgb(9, 9, 9);"><b>Pipeline Report</b></h2>
+
+                <!-- Filter Section -->
+                <div style="margin-top:30px;">
+                    <div class="d-flex">
+                        <h5 class="text-start">
+                            <b style="color:rgb(9, 9, 9);">Start Date:</b>
+                            <span t-esc="docs.start_date" t-options='{"widget": "date","format": "dd-MM-yyyy"}'/>
+                        </h5>
+                        <h5 class="text-end" style="margin-left:500px;  text-align:right;">
+                            <b style="color:rgb(9, 9, 9);">End Date:</b>
+                            <span t-esc="docs.end_date" t-options='{"widget": "date","format": "dd-MM-yyyy"}'/>
+                        </h5>
+                    </div>
+
+                    <t t-if="docs.stage_ids">
+                        <h5 style="margin-top:10px; margin-left:0px;">
+                            <b>Selected Stages:</b>
+                        </h5>   
+                        <ul style="margin-top: 10px;">
+                            <t t-foreach="docs.stage_ids" t-as="stage">
+                                <li style="color:rgb(9, 9, 9); margin-top: 10px;">
+                                    <t t-esc="stage.name"/>
+                                </li>
+                            </t>
+                        </ul>
+                    </t>
+                </div>
+
+                <!-- Table Section -->
+                <table class="table table-striped" style="border:2px solid white; margin-top: 20px; margin-left: 10px; margin-right: 20px; width:100%;">
+                    
+                    <!-- Column Headers Printed ONCE -->
+                    <thead>
+                        <tr style="font-size:18px;border: 1px solid rgb(9, 9, 9); background-color: #a9a9a9;">
+                            <th style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9); text-align:center;"><b>No.</b></th>
+                            <th style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9); text-align:center;"><b>Opportunity</b></th>
+                            <th style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9); text-align:center;"><b>Customer</b></th>
+                            <th style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9); text-align:center;"><b>Expected Revenue</b></th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <!-- Loop through grouped data -->
+                        <t t-foreach="pipline_history(docs)" t-as="group">
+                         <t t-set="total_revenue" t-value="0.0"/>
+                            <!-- Stage Header Row -->
+                            <tr>
+                                <td colspan="4" style="font-size:16px; font-weight:bold; background-color: #f0f0f0;">
+                                    <b style="color:rgb(8, 7, 7);">Stage: </b>
+                                    <span style="color:rgb(9, 9, 9);" t-esc="group.get('stage_id', 'N/A')"/>
+                                </td>
+                            </tr>
+
+                            <!-- Opportunity Rows -->
+                            <t t-set="sr_no" t-value="0"/>
+                            <t t-foreach="group['values']" t-as="line">
+                                <t t-set="sr_no" t-value="sr_no + 1"/>
+                                <t t-set="expected_revenue" t-value="line['expected_revenue'] or 0.0"/>  
+                                <t t-set="total_revenue" t-value="total_revenue + expected_revenue"/>
+                                <tr style="border: 1px solid rgb(9, 9, 9); background-color:rgb(248, 245, 245);">
+                                    <td style="text-align:start;color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9); text-align:center;">
+                                        <t t-esc="sr_no"/>
+                                    </td>
+                                    <td style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9);text-align:left;">
+                                        <t t-esc="line.get('name', '-')"/>
+                                    </td>
+                                    <td style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9);text-align:center;">
+                                        <t t-esc="line['partner_id']"/>
+                                    </td>
+                                    <td style="color:rgb(9, 9, 9); border: 1px solid rgb(9, 9, 9);text-align:right;">
+                                        <t t-esc="docs.currency_id.symbol"/>
+                                        <t t-esc="line['expected_revenue']" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                </tr>
+                            </t>
+                            <!-- Total Amount Row -->
+                            <tr style="font-weight:bold; ">
+                                <td colspan="3" style="text-align:right;"><b>Total Revenue:</b></td>
+                                <td style="text-align:right;">
+                                    <t t-esc="docs.currency_id.symbol"/>
+                                    <span t-esc="total_revenue" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>   
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="pipline_template1">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="docs" t-value="o"/>
+                <t t-call="dev_crm_pipeline_report.pipline_template"/>
+            </t>
+        </t>
+    </template>
+</odoo>

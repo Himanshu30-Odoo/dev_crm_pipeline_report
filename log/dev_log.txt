@@ -1,0 +1,20 @@
+05 May 2025 : HN
+---------------------------
+v 17.0.1.0
+
+    * module Created.
+	- add one wizard .
+	- add pipline report 
+
+05 May 2025 : HN
+---------------------------
+v 17.0.1.1
+
+	- pdf formate update
+	- wizard in add condition start_date to end_date validation Error
+
+	
+
+
+
+
